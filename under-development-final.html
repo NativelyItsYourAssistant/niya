@@ -63,7 +63,7 @@
 
   .nav-inner .wordmark{ justify-self:start; }
   .nav-inner .nav-links{ justify-self:center; }
-  .nav-inner > .btn{ justify-self:end; }
+  .nav-inner > .nav-actions{ justify-self:end; display:flex; align-items:center; gap:10px; }
 
   .wordmark{
     font-size:16px;
@@ -111,6 +111,7 @@
   .btn-secondary:hover{ border-color:var(--ink-faint); }
 
   .nav .btn-primary{ height:36px; padding:0 18px; font-size:13px; }
+  .nav .btn-secondary{ height:36px; padding:0 16px; font-size:13px; }
 
   /* ── Main / centered state ──────────────────────────────────────── */
 
@@ -260,6 +261,8 @@
 
   @media (max-width: 760px){
     .nav-links{ display:none; }
+    .nav-actions{ gap:6px; }
+    .nav-actions .btn{ padding:0 12px; font-size:12px; }
     .nav-inner{ grid-template-columns:auto auto; justify-content:space-between; }
     .footer-top{ flex-direction:column; align-items:flex-start; }
     .newsletter{ width:100%; }
@@ -278,7 +281,10 @@
         <a href="under-development-final.html">FAQ</a>
         <a href="under-development-final.html">Roadmap</a>
       </div>
-      <a href="#" class="btn btn-primary">Download APK</a>
+      <div class="nav-actions">
+        <a href="contact.html" class="btn btn-secondary">Contact</a>
+        <a href="versions/niya.apk" class="btn btn-primary">Download APK</a>
+      </div>
     </div>
   </nav>
 
@@ -310,7 +316,7 @@
           <a href="under-development-final.html">Privacy</a>
           <a href="under-development-final.html">Terms of use</a>
           <a href="under-development-final.html">Changelog</a>
-          <a href="under-development-final.html">Report an issue</a>
+          <a href="contact.html">Report an issue</a>
           <a href="under-development-final.html">Feature requests</a>
         </div>
         <div>

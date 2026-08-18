@@ -1,0 +1,53 @@
+<!-- Drop this inside your Contact/Report-a-bug page -->
+<style>
+  .email-block{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin:32px 0;
+    padding:18px 24px;
+    background:#FFFFFF;
+    border:1px solid #E4E2D8;
+    border-radius:16px;
+    max-width:fit-content;
+  }
+  .email-block a{
+    font-family:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    font-size:20px;
+    font-weight:600;
+    color:#141412;
+    text-decoration:none;
+  }
+  .email-block button{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    height:32px;
+    padding:0 14px;
+    border-radius:999px;
+    border:1px solid #D2D0C3;
+    background:transparent;
+    font-size:13px;
+    font-weight:600;
+    color:#5A594F;
+    cursor:pointer;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .email-block button:hover{ border-color:#8C8B7F; color:#141412; }
+</style>
+
+<div class="email-block">
+  <a href="mailto:you@yourdomain.com" id="emailLink">you@yourdomain.com</a>
+  <button id="copyBtn" type="button">Copy</button>
+</div>
+
+<script>
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    const email = document.getElementById('emailLink').textContent;
+    navigator.clipboard.writeText(email).then(() => {
+      this.textContent = 'Copied';
+      setTimeout(() => { this.textContent = 'Copy'; }, 1500);
+    });
+  });
+</script>
