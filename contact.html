@@ -274,7 +274,7 @@
       </div>
       <div class="nav-actions">
         <a href="contact.html" class="btn btn-secondary">Contact</a>
-        <a href="versions/niya.apk" class="btn btn-primary">Download APK</a>
+        <a href="https://github.com/NativelyItsYourAssistant/niya/releases/download/V1.0.0/Niya.v1.0.0.apk" class="btn btn-primary" data-niya-download>Download APK</a>
       </div>
     </div>
   </nav>
@@ -466,6 +466,228 @@
       });
     }
   </script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Niya — "Download started" popup
+     Drop this block once, right before </body>, on any page that has a
+     Download APK button/link. Works with your existing design tokens
+     (--bg, --ink, --line, etc. from your site's :root — falls back to
+     its own copies below if that page doesn't define them).
+
+     HOW TO WIRE IT UP:
+     Add  data-niya-download  to any <a> that points at the APK, e.g.:
+
+       <a href="https://github.com/you/repo/releases/download/v1.0/niya.apk"
+          class="btn btn-primary" data-niya-download>Download APK</a>
+
+     That's it — no id needed, works for as many buttons/pages as you add
+     the attribute to. The link's own href is reused as the fallback
+     "click here" URL, so update it in ONE place (the <a> tag) whenever
+     you cut a new release.
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<style>
+  .niya-toast-overlay{
+    position:fixed;
+    inset:0;
+    z-index:999;
+    background:rgba(20,20,18,0.55);
+    backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease;
+  }
+  .niya-toast-overlay.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .niya-toast-card{
+    position:relative;
+    width:100%;
+    max-width:380px;
+    background:var(--surface, #FFFFFF);
+    border:1px solid var(--line, #E4E2D8);
+    border-radius:var(--radius-lg, 28px);
+    padding:40px 32px 32px;
+    text-align:center;
+    box-shadow:0 24px 60px rgba(20,20,18,0.25);
+    transform:translateY(12px) scale(0.97);
+    transition:transform 0.3s cubic-bezier(.2,.8,.2,1);
+  }
+  .niya-toast-overlay.show .niya-toast-card{
+    transform:translateY(0) scale(1);
+  }
+
+  .niya-toast-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    border:none;
+    background:transparent;
+    color:var(--ink-faint, #8C8B7F);
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .niya-toast-close:hover{
+    background:var(--bg, #F7F6F2);
+    color:var(--ink, #141412);
+  }
+
+  /* ── Orb ─────────────────────────────────────────────────────────── */
+  .niya-orb-wrap{
+    width:84px;
+    height:84px;
+    margin:0 auto 24px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .niya-orb-ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid var(--line-strong, #D2D0C3);
+    animation:niya-ring-pulse 2.4s ease-out infinite;
+  }
+  .niya-orb-ring.delay{
+    animation-delay:1.2s;
+  }
+  .niya-orb-core{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #3a3a36, var(--ink, #141412) 70%);
+    box-shadow:0 0 24px rgba(20,20,18,0.35);
+    animation:niya-orb-breathe 2.4s ease-in-out infinite;
+  }
+
+  @keyframes niya-orb-breathe{
+    0%, 100% { transform:scale(1); }
+    50% { transform:scale(1.12); }
+  }
+  @keyframes niya-ring-pulse{
+    0%   { transform:scale(0.7); opacity:0.9; }
+    100% { transform:scale(1.9); opacity:0; }
+  }
+
+  .niya-toast-title{
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:-0.01em;
+    color:var(--ink, #141412);
+    margin-bottom:8px;
+  }
+  .niya-toast-sub{
+    font-size:14px;
+    color:var(--ink-soft, #5A594F);
+    line-height:1.5;
+    margin-bottom:20px;
+  }
+
+  .niya-toast-warning{
+    text-align:left;
+    display:flex;
+    gap:10px;
+    background:var(--bg, #F7F6F2);
+    border:1px solid var(--line, #E4E2D8);
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:12.5px;
+    line-height:1.55;
+    color:var(--ink-soft, #5A594F);
+    margin-bottom:18px;
+  }
+  .niya-toast-warning .icon{
+    flex:none;
+    font-size:15px;
+    line-height:1.4;
+  }
+  .niya-toast-warning b{
+    color:var(--ink, #141412);
+  }
+
+  .niya-toast-fallback{
+    font-size:12.5px;
+    color:var(--ink-faint, #8C8B7F);
+  }
+  .niya-toast-fallback a{
+    color:var(--ink, #141412);
+    font-weight:600;
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+</style>
+
+<div class="niya-toast-overlay" id="niyaToastOverlay">
+  <div class="niya-toast-card">
+    <button class="niya-toast-close" id="niyaToastClose" aria-label="Close">✕</button>
+
+    <div class="niya-orb-wrap">
+      <div class="niya-orb-ring"></div>
+      <div class="niya-orb-ring delay"></div>
+      <div class="niya-orb-core"></div>
+    </div>
+
+    <div class="niya-toast-title">Thank you</div>
+    <div class="niya-toast-sub">Your download should be starting now.</div>
+
+    <div class="niya-toast-warning">
+      <span class="icon">⚠️</span>
+      <span><b>Google Play Protect may flag this download</b> — that's expected for apps outside the Play Store. If it warns you, you can safely let it continue. Niya doesn't contain spyware or malware.</span>
+    </div>
+
+    <div class="niya-toast-fallback">
+      Didn't start? <a href="#" id="niyaToastFallbackLink">Click here</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const overlay = document.getElementById('niyaToastOverlay');
+  const closeBtn = document.getElementById('niyaToastClose');
+  const fallbackLink = document.getElementById('niyaToastFallbackLink');
+
+  function showToast(apkUrl){
+    fallbackLink.href = apkUrl;
+    overlay.classList.add('show');
+  }
+  function hideToast(){
+    overlay.classList.remove('show');
+  }
+
+  document.querySelectorAll('[data-niya-download]').forEach(function(link){
+    link.addEventListener('click', function(){
+      // Let the browser start the actual file download natively (don't
+      // preventDefault) — we just layer the toast on top a beat later.
+      const apkUrl = link.getAttribute('href');
+      setTimeout(function(){ showToast(apkUrl); }, 400);
+    });
+  });
+
+  closeBtn.addEventListener('click', hideToast);
+  overlay.addEventListener('click', function(e){
+    if (e.target === overlay) hideToast();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') hideToast();
+  });
+})();
+</script>
 
 </body>
 </html>
